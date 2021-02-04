@@ -21,35 +21,8 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/cloud_icon" />
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:layout_height="wrap_content" >
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:text="Radio 1"
-            android:layout_height="wrap_content"/>
-
-        <RadioButton
-            android:layout_width="137dp"
-            android:layout_height="206dp"
-            android:text="Radio 2" />
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:text="Radio 3"
-            android:layout_height="wrap_content"/>
 
 
-
-
-
-    </RadioGroup>
     <include layout="@layout/content_main" />
 
 
