@@ -33,17 +33,17 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Radio 1" />
+            android:text="@string/glide_url" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Radio 2" />
+            android:text="@string/load_app_url" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Radio 3" />
+            android:text="@string/retrofit_url" />
 
 
     </RadioGroup>
