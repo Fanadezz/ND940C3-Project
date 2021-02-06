@@ -37,11 +37,11 @@ class LoadingButton @JvmOverloads constructor(
 
         if (new == ButtonState.Loading) {
             Timber.i("Animation Triggered")
+
             animateLoadingButton()
-            animateCircle()
+            animateArcAngle()
         }
-        //force draw()
-        invalidate()
+
 
     }
 
@@ -86,7 +86,7 @@ class LoadingButton @JvmOverloads constructor(
 
         //write button text
         paint.color = Color.WHITE
-        drawButtonText(resources.getString(R.string.default_button_text), canvas)
+        drawText(resources.getString(R.string.default_button_text), canvas)
     }
 
     //method for drawing rectangular button when ButtonState.Loading
@@ -100,11 +100,8 @@ class LoadingButton @JvmOverloads constructor(
         //draw button
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
-        //write button text
-        paint.color = Color.WHITE
-        drawButtonText(resources.getString(R.string.button_loading), canvas)
 
-        //animateLoadingButton(canvas)
+
 
     }
 
@@ -132,8 +129,9 @@ class LoadingButton @JvmOverloads constructor(
     }
 
 
-    private fun drawButtonText(text: String, canvas: Canvas) {
+    private fun drawText(text: String, canvas: Canvas) {
 
+        paint.color = Color.WHITE
         canvas.drawText(
                 text, (widthSize / 2).toFloat(), (heightSize / 2) + (heightSize / 10).toFloat(), paint)
     }
@@ -143,56 +141,59 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        when (buttonState) {
-            //Draw the loading button with text
-            ButtonState.Loading -> {
+       if (buttonState==ButtonState.Completed){
+
+           drawDefaultButton(canvas)
+       }else{
+
+           drawLoadingButton(canvas)
+           drawAnimatedBackground(canvas)
+           drawText(resources.getString(R.string.button_loading), canvas)
+       }
 
 
-                drawLoadingButton(canvas)
 
 
-            }
 
-            //draw the default button
-            ButtonState.Completed -> drawDefaultButton(canvas)
-            else                  -> drawDefaultButton(canvas)
-        }
-
-        //animate the Loading Button with animatedWidth
-        paint.color = darkPrimaryColor
-        canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
-
-
-        //animate circe
-        paint.color = accentColor
-        canvas.drawArc(
-                (widthSize*0.66).toFloat(), (heightSize*0.2 ).toFloat(), (widthSize*0.74 ).toFloat(),
-                (heightSize *0.8).toFloat(), 0f,
-                animatedAngle,
-                true,
-                paint)
+        drawSmallCircle(canvas)
 
     }
 
+    private fun drawAnimatedBackground(canvas: Canvas) {
+        //draw animated background for the Load Button
+        paint.color = darkPrimaryColor
+        canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
+    }
 
-    fun animateCircle() {
+    private fun drawSmallCircle(canvas: Canvas) {
+        //draw Arc
+        paint.color = accentColor
+        canvas.drawArc(
+                (widthSize * 0.66).toFloat(), (heightSize * 0.2).toFloat(), (widthSize * 0.74).toFloat(),
+                (heightSize * 0.8).toFloat(), 0f, animatedAngle, true, paint)
+    }
 
 
+    private fun animateArcAngle() {
         valueAnimatorAngle.apply {
 
             duration = 5000
+            //set range of 0 to 360 degrees clockwise
             setFloatValues(0f, 360f)
             interpolator = LinearInterpolator()
 
 
         }
+
+        //add listener
         valueAnimatorAngle.addUpdateListener {
 
+            //set value of the new angle
             animatedAngle = it.animatedValue as Float
             invalidate()
         }
 
-
+        //start animation
         valueAnimatorAngle.start()
     }
 
