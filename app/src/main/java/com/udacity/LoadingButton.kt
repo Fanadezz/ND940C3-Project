@@ -21,20 +21,24 @@ class LoadingButton @JvmOverloads constructor(
     //variable for primary and primaryDark Color
     private val primaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
     private val darkPrimaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
+    private val accentColor = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
 
     /*provides a timing engine for running animations which calculate
     the animated values & set them on the target objects.*/
-    private val valueAnimator = ValueAnimator()
-    private  var animatedWidthValue:Float =0.0f
+    private val valueAnimatorWidth = ValueAnimator()
+    private val valueAnimatorAngle = ValueAnimator()
+    private var animatedWidth: Float = 0.0f
+    private var animatedAngle: Float = 0.0f
 
     //takes the initial button value and a callback that’s called after button state changes
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(
             ButtonState.Completed) { p, old, new ->
 
-        if(new==ButtonState.Loading){
-Timber.i("Animation Triggered")
+        if (new == ButtonState.Loading) {
+            Timber.i("Animation Triggered")
             animateLoadingButton()
+            animateCircle()
         }
         //force draw()
         invalidate()
@@ -61,13 +65,7 @@ Timber.i("Animation Triggered")
         return super.performClick()
 
 
-   /*     if (super.performClick()) return true
-        buttonState = ButtonState.Loading
-Timber.i("OnClick Called and ButtonState is $buttonState")
-
-        return true*/
     }
-
 
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -79,11 +77,12 @@ Timber.i("OnClick Called and ButtonState is $buttonState")
         heightSize = h
         setMeasuredDimension(w, h)
     }
+
     private fun drawDefaultButton(canvas: Canvas) {
 
         paint.color = primaryColor
 
-        canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(),paint)
+        canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
         //write button text
         paint.color = Color.WHITE
@@ -110,41 +109,33 @@ Timber.i("OnClick Called and ButtonState is $buttonState")
     }
 
 
-    private fun animateLoadingButton(){
+    private fun animateLoadingButton() {
 
         paint.color = darkPrimaryColor
 
-        valueAnimator.apply {
+        valueAnimatorWidth.apply {
             interpolator = LinearInterpolator()
             //animate button width from 0 to width size
             setFloatValues(0f, widthSize.toFloat())
             duration = 5000
 
 
-
         }
-        valueAnimator.addUpdateListener {
+        valueAnimatorWidth.addUpdateListener {
 
-           animatedWidthValue = it.animatedValue as Float
-          //  canvas.drawRect(0f, 0f, animatedWidthValue, heightSize.toFloat(), paint)
+            animatedWidth = it.animatedValue as Float
+            //  canvas.drawRect(0f, 0f, animatedWidthValue, heightSize.toFloat(), paint)
             invalidate()
         }
 
-        valueAnimator.start()
+        valueAnimatorWidth.start()
     }
 
 
-
-
     private fun drawButtonText(text: String, canvas: Canvas) {
-        //DRAW BUTTON TEXT
-
-        //change text color to black
-
 
         canvas.drawText(
-                text, (widthSize / 2).toFloat(),
-                (heightSize/2 )+(heightSize/10).toFloat(), paint)
+                text, (widthSize / 2).toFloat(), (heightSize / 2) + (heightSize / 10).toFloat(), paint)
     }
 
 
@@ -152,20 +143,57 @@ Timber.i("OnClick Called and ButtonState is $buttonState")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        when (buttonState) {
+            //Draw the loading button with text
+            ButtonState.Loading -> {
 
 
+                drawLoadingButton(canvas)
 
-    when(buttonState){
 
-        ButtonState.Loading -> drawLoadingButton(canvas)
-        ButtonState.Completed -> drawDefaultButton(canvas)
-        else -> drawDefaultButton(canvas)
-    }
+            }
 
+            //draw the default button
+            ButtonState.Completed -> drawDefaultButton(canvas)
+            else                  -> drawDefaultButton(canvas)
+        }
+
+        //animate the Loading Button with animatedWidth
         paint.color = darkPrimaryColor
-        canvas.drawRect(0f, 0f, animatedWidthValue, heightSize.toFloat(), paint)
+        canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
+
+
+        //animate circe
+        paint.color = accentColor
+        canvas.drawArc(
+                (widthSize*0.66).toFloat(), (heightSize*0.2 ).toFloat(), (widthSize*0.74 ).toFloat(),
+                (heightSize *0.8).toFloat(), 0f,
+                animatedAngle,
+                true,
+                paint)
 
     }
 
+
+    fun animateCircle() {
+
+
+        valueAnimatorAngle.apply {
+
+            duration = 5000
+            setFloatValues(0f, 360f)
+            interpolator = LinearInterpolator()
+
+
+        }
+        valueAnimatorAngle.addUpdateListener {
+
+            animatedAngle = it.animatedValue as Float
+            invalidate()
+        }
+
+
+        valueAnimatorAngle.start()
+    }
 
 }
