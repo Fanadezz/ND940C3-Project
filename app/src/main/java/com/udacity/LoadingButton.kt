@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.TypedArrayUtils.getText
 import kotlin.properties.Delegates
 
@@ -17,6 +18,9 @@ class LoadingButton @JvmOverloads constructor(
     private var widthSize = 0
     private var heightSize = 0
 
+    //variable for primary and primaryDark Color
+    private val primaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
+private val darkPrimaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
 
     /*provides a timing engine for running animations which calculate
     the animated values & set them on the target objects.*/
@@ -69,7 +73,7 @@ class LoadingButton @JvmOverloads constructor(
 
     private fun drawLoadingButton(canvas: Canvas) {
 
-        //DRAW ACTUAL BUTTON
+
         //change button color
         paint.color = Color.BLUE
 
@@ -81,12 +85,17 @@ class LoadingButton @JvmOverloads constructor(
 
     }
 
+    fun drawFinishedButton(canvas: Canvas){
+
+
+    }
+
+
     private fun drawButtonText(canvas: Canvas) {
         //DRAW BUTTON TEXT
 
         //change text color to black
 
-        paint.color = Color.BLACK
 
         canvas.drawText(
                 resources.getString(R.string.button_loading), (widthSize / 2).toFloat(),
