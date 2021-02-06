@@ -35,9 +35,11 @@ class LoadingButton @JvmOverloads constructor(
 
 
     private val paint = Paint().apply {
-        isClickable = true
+
         color = Color.GREEN
         style = Paint.Style.FILL
+        textAlign = Paint.Align.CENTER
+        textSize = 45f
     }
 
     init {
@@ -75,17 +77,20 @@ class LoadingButton @JvmOverloads constructor(
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
         //draw the loading text
+        drawButtonText(canvas)
 
+    }
+
+    private fun drawButtonText(canvas: Canvas) {
         //DRAW BUTTON TEXT
 
         //change text color to black
 
         paint.color = Color.BLACK
 
-        canvas.drawText(resources.getString(R.string.button_loading), heightSize.toFloat(), heightSize
-                .toFloat()/2,
-                        paint)
-
+        canvas.drawText(
+                resources.getString(R.string.button_loading), (widthSize / 2).toFloat(),
+                heightSize.toFloat() / 2, paint)
     }
 
 }
