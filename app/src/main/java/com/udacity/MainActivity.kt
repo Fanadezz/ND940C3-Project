@@ -1,19 +1,18 @@
 package com.udacity
 
-import android.app.DownloadManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
@@ -23,18 +22,37 @@ class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
 
-    private lateinit var notificationManager: NotificationManager
+    //private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
+
+    companion object {
+
+        private const val URL =
+                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
+        private const val URL1 = "https://github.com/bumptech/glide"
+        private const val URL2 =
+                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
+        private const val URL3 = "https://github.com/square/retrofit"
+
+
+        private const val CHANNEL_ID = "channelId"
+        private const val NOTIFICATION_ID = 1
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        /*execute createNotification() as soon as app starts so as to create
+         the notification channel that will enable Notification posting*/
+        createNotificationChannel()
+
         Timber.plant(Timber.DebugTree())
 
-        Timber.i("in the onCreate()")
+
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         custom_button.setOnClickListener {
@@ -53,14 +71,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
+
+    //notificationManager already initialized in createNotificationChannel()
+    private lateinit var notificationManager: NotificationManager
+
+    //broadcastReceiver
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
+            //call notify off NotificationManager passing in the id & notification
+            notificationManager.apply {
 
-
-            Toast.makeText(context, "Download Complete", Toast.LENGTH_SHORT)
-                    .show()
+                notify(NOTIFICATION_ID, createNotification())
+            }
         }
     }
 
@@ -77,18 +105,7 @@ class MainActivity : AppCompatActivity() {
         downloadID = downloadManager.enqueue(request) // enqueue puts the download request in the queue.
     }
 
-    companion object {
 
-        private const val URL =
-                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val URL1 = "https://github.com/bumptech/glide"
-        private const val URL2 =
-                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
-        private const val URL3 = "https://github.com/square/retrofit"
-
-
-        private const val CHANNEL_ID = "channelId"
-    }
 
 
     private fun getUrl(): String {
@@ -105,9 +122,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun createNotification() {
 
-        //channel_ID required for compatibility with API 8, CHANNEL_ID ignored by older versions
+
+    private fun createNotification(): Notification {
+
+        /*channel_ID required for compatibility with API 8, CHANNEL_ID
+         ignored by older versions*/
+
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
 
         builder.apply {
@@ -116,11 +137,14 @@ class MainActivity : AppCompatActivity() {
             setSmallIcon(R.drawable.ic_assistant_black_24dp)
             setContentText(resources.getString(R.string.notification_description))
 
-
-            /* This is used by Android 7.1 and lower, For Android 8.0 and higher,
-            you must instead set the channel importance*/
+            /* This is used by Android 7.1 and lower, Android 8.0 and higher,
+            use channel importance*/
             priority = NotificationCompat.PRIORITY_HIGH
         }
+
+
+        //return notification
+    return builder.build()
     }
 
     //create channel
@@ -134,13 +158,17 @@ class MainActivity : AppCompatActivity() {
             val importance = NotificationManager.IMPORTANCE_HIGH
 
             //NotificationChannel constructor
-            val channel = NotificationChannel(CHANNEL_ID, channelName, importance).
-            apply {
-                        description = channelDesc
-                    }
+            val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
+                description = channelDesc
+            }
+
+
+            //further channel customizations before creating it
+            channel.enableLights(true)
+            channel.lightColor = Color.RED
+            channel.enableVibration(true)
 
             //register channel with system
-
             notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }

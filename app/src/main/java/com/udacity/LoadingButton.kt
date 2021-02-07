@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.core.animation.addListener
 import androidx.core.content.res.ResourcesCompat
 import timber.log.Timber
 import kotlin.properties.Delegates
@@ -60,7 +61,6 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun performClick(): Boolean {
         buttonState = ButtonState.Loading
-        Timber.i("OnClick Called and ButtonState is $buttonState")
 
         return super.performClick()
 
@@ -194,8 +194,15 @@ class LoadingButton @JvmOverloads constructor(
 
             //set value of the new angle
             animatedAngle = it.animatedValue as Float
+
+            if (animatedAngle==360f){
+
+                buttonState = ButtonState.Completed
+            }
             invalidate()
         }
+
+
 
         //start animation
         valueAnimatorAngle.start()
