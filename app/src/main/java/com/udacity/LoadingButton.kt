@@ -171,6 +171,10 @@ class LoadingButton @JvmOverloads constructor(
         canvas.drawArc(
                 (widthSize * 0.66).toFloat(), (heightSize * 0.2).toFloat(), (widthSize * 0.74).toFloat(),
                 (heightSize * 0.8).toFloat(), 0f, animatedAngle, true, paint)
+
+
+       // canvas.drawa
+        //canvas.drawCircle(0f, 0f, ((heightSize/2).toFloat()), paint)
     }
 
 

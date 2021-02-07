@@ -12,6 +12,7 @@
     <string name="button_loading">We are loading </string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="default_button_text">Download</string>
+    <string name="radio_message_title">Please select the file to download</string>
 
 
     <string name="glide_url">Image Loading Library by Bump Tech</string>
