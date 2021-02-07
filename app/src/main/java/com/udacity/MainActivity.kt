@@ -1,6 +1,7 @@
 package com.udacity
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -8,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -104,6 +106,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun createNotification() {
+
+        //channel_ID required for compatibility with API 8, CHANNEL_ID ignored by older versions
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
 
         builder.apply {
@@ -111,7 +115,34 @@ class MainActivity : AppCompatActivity() {
             setContentTitle(resources.getString(R.string.notification_title))
             setSmallIcon(R.drawable.ic_assistant_black_24dp)
             setContentText(resources.getString(R.string.notification_description))
+
+
+            /* This is used by Android 7.1 and lower, For Android 8.0 and higher,
+            you must instead set the channel importance*/
             priority = NotificationCompat.PRIORITY_HIGH
+        }
+    }
+
+    //create channel
+    private fun createNotificationChannel() {
+
+        //check API Level
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val channelName = resources.getString(R.string.channel_name)
+            val channelDesc = resources.getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_HIGH
+
+            //NotificationChannel constructor
+            val channel = NotificationChannel(CHANNEL_ID, channelName, importance).
+            apply {
+                        description = channelDesc
+                    }
+
+            //register channel with system
+
+            notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
