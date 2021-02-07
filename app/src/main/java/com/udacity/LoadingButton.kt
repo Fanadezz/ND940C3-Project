@@ -195,6 +195,7 @@ class LoadingButton @JvmOverloads constructor(
             //set value of the new angle
             animatedAngle = it.animatedValue as Float
 
+            //change button state when animation is over
             if (animatedAngle==360f){
 
                 buttonState = ButtonState.Completed

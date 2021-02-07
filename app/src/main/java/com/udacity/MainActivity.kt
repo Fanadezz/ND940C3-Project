@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
@@ -37,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
 
         private const val CHANNEL_ID = "channelId"
-        private const val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ID = 0
     }
 
 
@@ -72,10 +71,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
     //notificationManager already initialized in createNotificationChannel()
     private lateinit var notificationManager: NotificationManager
 
@@ -106,8 +101,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun getUrl(): String {
 
         return when (radioGroup.checkedRadioButtonId) {
@@ -120,8 +113,6 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
-
 
 
     private fun createNotification(): Notification {
@@ -143,8 +134,25 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        //base intent - pass in the context and the activity to be launched
+        val intent = Intent(this, DetailActivity::class.java)
+
+        //PendingIntent
+        val pendingIntent = PendingIntent.getActivity(this,// -> context in which this PI should start the activity
+                                                      NOTIFICATION_ID,
+                                                      intent,
+                                                      0)
+
+
+
+        //set pendingIntent
+        builder.setContentIntent(pendingIntent)
+
+        //dismiss notification from drawer
+        builder.setAutoCancel(true)
+
         //return notification
-    return builder.build()
+        return builder.build()
     }
 
     //create channel
