@@ -135,19 +135,24 @@ class MainActivity : AppCompatActivity() {
 
 
         //base intent - pass in the context and the activity to be launched
-        val intent = Intent(this, DetailActivity::class.java)
+        val intent = Intent(this, DetailActivity::class.java).apply {
+
+
+        }
 
         //PendingIntent
-        val pendingIntent = PendingIntent.getActivity(this,// -> context in which this PI should start the activity
+        pendingIntent = PendingIntent.getActivity(this,// -> context in which this PI should start the activity
                                                       NOTIFICATION_ID,
                                                       intent,
                                                       0)
 
-
+        action = NotificationCompat.Action(R.drawable.download_status, getString(R.string.download_status), pendingIntent)
 
         //set pendingIntent
         builder.setContentIntent(pendingIntent)
 
+        //add action
+        builder.addAction(action)
         //dismiss notification from drawer
         builder.setAutoCancel(true)
 
