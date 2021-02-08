@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_detail.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
 
@@ -68,6 +69,8 @@ class MainActivity : AppCompatActivity() {
                 download(getUrl())
             }
         }
+
+
     }
 
 
