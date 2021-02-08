@@ -17,6 +17,11 @@
     <string name="radio_message_title">Please select the file to download</string>
     <string name="download_status">Check Status</string>
 
+    <string name="file_name_label">File Name</string>
+    <string name="status_label">Status</string>
+    <string name="success_status">Success</string>
+    <string name="failure_status">Failure</string>
+
 
     <string name="glide_url">Image Loading Library by Bump Tech</string>
     <string name="load_app_url">LoadApp - Current repository by Udacity</string>
