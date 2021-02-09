@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
+          
             //call notify off NotificationManager passing in the id & notification
             notificationManager.apply {
 
@@ -190,4 +191,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //kill the receiver
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
+    }
 }
