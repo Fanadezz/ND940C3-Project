@@ -21,10 +21,13 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
+    private lateinit var downloadManager: DownloadManager
 
     //private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
+    private lateinit var status: String
+    private lateinit var fileName: String
 
     companion object {
 
@@ -38,6 +41,10 @@ class MainActivity : AppCompatActivity() {
 
         private const val CHANNEL_ID = "channelId"
         private const val NOTIFICATION_ID = 0
+const val FILE_NAME_KEY = "fileName"
+   const val DOWNLOAD_STATUS_KEY = "downloadStatus"
+
+
     }
 
 
@@ -65,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             }
             else {
 
-                Timber.i("The Url is ${getUrl()}")
+
                 download(getUrl())
             }
         }
@@ -80,14 +87,46 @@ class MainActivity : AppCompatActivity() {
     //broadcastReceiver
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
-          
+
+
+
+
+            //DownloadManager.Query() is used to filter DownloadManager queries
+            val query = DownloadManager.Query()
+
+            query.setFilterById(id)
+
+            val cursor = downloadManager.query(query)
+
+            if (cursor.moveToFirst()) {
+
+                when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                    DownloadManager.STATUS_SUCCESSFUL -> {
+
+                        status = getString(R.string.success_status)
+                        fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+
+                        Timber.i("The file is: $fileName and the status is: $status")
+                    }
+                    DownloadManager.STATUS_FAILED -> {
+
+                        status = getString(R.string.failure_status)
+                        fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+
+                    }
+
+                }
+            }
+
+
             //call notify off NotificationManager passing in the id & notification
             notificationManager.apply {
 
                 notify(NOTIFICATION_ID, createNotification())
             }
+
         }
     }
 
@@ -100,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                         .setAllowedOverMetered(true)
                         .setAllowedOverRoaming(true)
 
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID = downloadManager.enqueue(request) // enqueue puts the download request in the queue.
     }
 
@@ -111,8 +150,8 @@ class MainActivity : AppCompatActivity() {
 
             R.id.radioButton1 -> URL1
             R.id.radioButton2 -> URL2
-            R.id.radioButton3 -> URL3
-            else              -> URL
+
+            else              -> URL3
         }
 
 
@@ -140,17 +179,25 @@ class MainActivity : AppCompatActivity() {
 
         //base intent - pass in the context and the activity to be launched
         val intent = Intent(this, DetailActivity::class.java).apply {
+            addFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
+            putExtra(DOWNLOAD_STATUS_KEY, status)
+         putExtra(FILE_NAME_KEY, fileName)
 
+            action = Intent.ACTION_MAIN
+
+           // category = Intent.CATEGORY_LAUNCHER
+            addCategory(Intent.CATEGORY_LAUNCHER)
         }
 
         //PendingIntent
-        pendingIntent = PendingIntent.getActivity(this,// -> context in which this PI should start the activity
-                                                      NOTIFICATION_ID,
-                                                      intent,
-                                                      0)
+        pendingIntent = PendingIntent.getActivity(
+                this, // -> context in which this PI should start the activity
+                NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        action = NotificationCompat.Action(R.drawable.download_status, getString(R.string.download_status), pendingIntent)
+        action =
+                NotificationCompat.Action(
+                        R.drawable.download_status, getString(R.string.download_status), pendingIntent)
 
         //set pendingIntent
         builder.setContentIntent(pendingIntent)
@@ -197,4 +244,5 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         unregisterReceiver(receiver)
     }
+
 }

@@ -114,7 +114,7 @@ class LoadingButton @JvmOverloads constructor(
             interpolator = LinearInterpolator()
             //animate button width from 0 to width size
             setFloatValues(0f, widthSize.toFloat())
-            duration = 5000
+            duration = 3000
 
 
         }
@@ -149,13 +149,14 @@ class LoadingButton @JvmOverloads constructor(
            drawLoadingButton(canvas)
            drawAnimatedBackground(canvas)
            drawText(resources.getString(R.string.button_loading), canvas)
+           drawSmallCircle(canvas)
        }
 
 
 
 
 
-        drawSmallCircle(canvas)
+
 
     }
 
@@ -181,7 +182,7 @@ class LoadingButton @JvmOverloads constructor(
     private fun animateArcAngle() {
         valueAnimatorAngle.apply {
 
-            duration = 5000
+            duration = 3000
             //set range of 0 to 360 degrees clockwise
             setFloatValues(0f, 360f)
             interpolator = LinearInterpolator()
