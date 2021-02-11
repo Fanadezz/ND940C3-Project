@@ -21,9 +21,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-android:id="@+id/radioGroup"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,21 +31,24 @@ android:id="@+id/radioGroup"
         app:layout_constraintVertical_bias="0.0">
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:layout_height="wrap_content"
             android:text="@string/glide_url" />
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:layout_height="wrap_content"
             android:text="@string/load_app_url" />
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:layout_height="wrap_content"
             android:text="@string/retrofit_url" />
 
 
