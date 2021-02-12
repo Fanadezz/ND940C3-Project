@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -196,13 +197,16 @@ class MainActivity : AppCompatActivity() {
          ignored by older versions*/
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+        val eggImage = BitmapFactory.decodeResource(resources, R.drawable.download_status)
+
 
         builder.apply {
 
             setContentTitle(resources.getString(R.string.notification_title))
             setSmallIcon(R.drawable.ic_assistant_black_24dp)
             setContentText(resources.getString(R.string.notification_description))
-
+            setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            setLargeIcon(eggImage)
 
             /* This is used by Android 7.1 and lower, Android 8.0 and higher,
             use channel importance*/
@@ -212,25 +216,19 @@ class MainActivity : AppCompatActivity() {
 
         //base intent - pass in the context and the activity to be launched
         val intent = Intent(this, DetailActivity::class.java).apply {
-          //  addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
             //put file name and download status
             putExtra(DOWNLOAD_STATUS_KEY, status)
             putExtra(FILE_NAME_KEY, fileName)
-
-            //action = Intent.ACTION_MAIN
-
-            // category = Intent.CATEGORY_LAUNCHER
-            //addCategory(Intent.CATEGORY_LAUNCHER)
         }
 
         //PendingIntent
-        pendingIntent = PendingIntent.getActivity(
-                this, // -> context in which this PI should start the activity
-                NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        pendingIntent =
+                PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        action = NotificationCompat.Action(
-                R.drawable.download_status, getString(R.string.download_status), pendingIntent)
+        action =
+                NotificationCompat.Action(
+                        R.drawable.download_status, getString(R.string.download_status), pendingIntent)
 
         //set pendingIntent
         builder.setContentIntent(pendingIntent)
@@ -243,7 +241,6 @@ class MainActivity : AppCompatActivity() {
         //return notification
         return builder.build()
     }
-
 
 
     //kill the receiver
