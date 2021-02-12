@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_detail.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
 
@@ -23,11 +22,14 @@ class MainActivity : AppCompatActivity() {
     private var downloadID: Long = 0
     private lateinit var downloadManager: DownloadManager
 
-    //private lateinit var notificationManager: NotificationManager
+
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
     private lateinit var status: String
     private lateinit var fileName: String
+
+    //notificationManager to be initialized in createNotificationChannel()
+    private lateinit var notificationManager: NotificationManager
 
     companion object {
 
@@ -41,38 +43,42 @@ class MainActivity : AppCompatActivity() {
 
         private const val CHANNEL_ID = "channelId"
         private const val NOTIFICATION_ID = 0
-const val FILE_NAME_KEY = "fileName"
-   const val DOWNLOAD_STATUS_KEY = "downloadStatus"
+        const val FILE_NAME_KEY = "fileName"
+        const val DOWNLOAD_STATUS_KEY = "downloadStatus"
 
 
     }
 
-
+    //ONCREATE
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+
         /*execute createNotification() as soon as app starts so as to create
          the notification channel that will enable Notification posting*/
         createNotificationChannel()
 
+        //register Timber
         Timber.plant(Timber.DebugTree())
 
-
+        //register receiver
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+        //ONCLICK LISTENER
         custom_button.setOnClickListener {
 
-
+            //if-check for no radio button selected
             if (radioGroup.checkedRadioButtonId == -1) {
 
+                //Toast Message
                 Toast.makeText(this, resources.getString(R.string.radio_message_title), Toast.LENGTH_SHORT)
                         .show()
             }
             else {
 
-
+                //pass the URL if a radio button is selected
                 download(getUrl())
             }
         }
@@ -81,16 +87,13 @@ const val FILE_NAME_KEY = "fileName"
     }
 
 
-    //notificationManager already initialized in createNotificationChannel()
-    private lateinit var notificationManager: NotificationManager
-
-    //broadcastReceiver
+    //BROADCAST RECEIVER
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+
+            /*DownloadManager.enqueue(request) returns a unique long ID which acts as
+            an identifier for the download.*/
             val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-
-
-
 
 
             //DownloadManager.Query() is used to filter DownloadManager queries
@@ -103,13 +106,16 @@ const val FILE_NAME_KEY = "fileName"
             if (cursor.moveToFirst()) {
 
                 when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                    //SUCCESS
                     DownloadManager.STATUS_SUCCESSFUL -> {
 
                         status = getString(R.string.success_status)
                         fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
 
-                        Timber.i("The file is: $fileName and the status is: $status")
+
                     }
+
+                    //FAILURE
                     DownloadManager.STATUS_FAILED -> {
 
                         status = getString(R.string.failure_status)
@@ -156,62 +162,7 @@ const val FILE_NAME_KEY = "fileName"
 
 
     }
-
-
-    private fun createNotification(): Notification {
-
-        /*channel_ID required for compatibility with API 8, CHANNEL_ID
-         ignored by older versions*/
-
-        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-
-        builder.apply {
-
-            setContentTitle(resources.getString(R.string.notification_title))
-            setSmallIcon(R.drawable.ic_assistant_black_24dp)
-            setContentText(resources.getString(R.string.notification_description))
-
-            /* This is used by Android 7.1 and lower, Android 8.0 and higher,
-            use channel importance*/
-            priority = NotificationCompat.PRIORITY_HIGH
-        }
-
-
-        //base intent - pass in the context and the activity to be launched
-        val intent = Intent(this, DetailActivity::class.java).apply {
-            addFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-            putExtra(DOWNLOAD_STATUS_KEY, status)
-         putExtra(FILE_NAME_KEY, fileName)
-
-            action = Intent.ACTION_MAIN
-
-           // category = Intent.CATEGORY_LAUNCHER
-            addCategory(Intent.CATEGORY_LAUNCHER)
-        }
-
-        //PendingIntent
-        pendingIntent = PendingIntent.getActivity(
-                this, // -> context in which this PI should start the activity
-                NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        action =
-                NotificationCompat.Action(
-                        R.drawable.download_status, getString(R.string.download_status), pendingIntent)
-
-        //set pendingIntent
-        builder.setContentIntent(pendingIntent)
-
-        //add action
-        builder.addAction(action)
-        //dismiss notification from drawer
-        builder.setAutoCancel(true)
-
-        //return notification
-        return builder.build()
-    }
-
-    //create channel
+    //CREATE_CHANNEL
     private fun createNotificationChannel() {
 
         //check API Level
@@ -237,6 +188,63 @@ const val FILE_NAME_KEY = "fileName"
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+    //CREATE NOTIFICATION
+    private fun createNotification(): Notification {
+
+        /*channel_ID required for compatibility with API 8, CHANNEL_ID
+         ignored by older versions*/
+
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+
+        builder.apply {
+
+            setContentTitle(resources.getString(R.string.notification_title))
+            setSmallIcon(R.drawable.ic_assistant_black_24dp)
+            setContentText(resources.getString(R.string.notification_description))
+
+
+            /* This is used by Android 7.1 and lower, Android 8.0 and higher,
+            use channel importance*/
+            priority = NotificationCompat.PRIORITY_HIGH
+        }
+
+
+        //base intent - pass in the context and the activity to be launched
+        val intent = Intent(this, DetailActivity::class.java).apply {
+          //  addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+            //put file name and download status
+            putExtra(DOWNLOAD_STATUS_KEY, status)
+            putExtra(FILE_NAME_KEY, fileName)
+
+            //action = Intent.ACTION_MAIN
+
+            // category = Intent.CATEGORY_LAUNCHER
+            //addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+
+        //PendingIntent
+        pendingIntent = PendingIntent.getActivity(
+                this, // -> context in which this PI should start the activity
+                NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        action = NotificationCompat.Action(
+                R.drawable.download_status, getString(R.string.download_status), pendingIntent)
+
+        //set pendingIntent
+        builder.setContentIntent(pendingIntent)
+
+        //add action
+        builder.addAction(action)
+        //dismiss notification from drawer
+        builder.setAutoCancel(true)
+
+        //return notification
+        return builder.build()
+    }
+
+
 
     //kill the receiver
 
