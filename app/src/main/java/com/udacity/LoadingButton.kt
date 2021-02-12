@@ -56,20 +56,37 @@ class LoadingButton @JvmOverloads constructor(context: Context,
         return super.performClick()
     }
 
-
+    //ON_MEASURE
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
-        val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
+        val minWidth: Int = paddingLeft + paddingRight + suggestedMinimumWidth
+        val w: Int = resolveSizeAndState(minWidth, widthMeasureSpec, 1)
         val h: Int = resolveSizeAndState(MeasureSpec.getSize(w), heightMeasureSpec, 0)
         widthSize = w
         heightSize = h
         setMeasuredDimension(w, h)
     }
+    //ON_DRAW
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
 
+
+        //draw default button
+        if (buttonState == ButtonState.Completed) {
+            drawDefaultButton(canvas)
+        }
+
+        //else draw animations
+        else {
+            drawLoadingButton(canvas)
+            drawAnimatedBackground(canvas)
+            drawText(resources.getString(R.string.button_loading), canvas)
+            drawSmallCircle(canvas)
+        }
+
+    }
+    //DEFAULT_BUTTON
     private fun drawDefaultButton(canvas: Canvas) {
-
         paint.color = primaryColor
-
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
         //write button text
@@ -77,37 +94,42 @@ class LoadingButton @JvmOverloads constructor(context: Context,
         drawText(resources.getString(R.string.default_button_text), canvas)
     }
 
-    //method for drawing rectangular button when ButtonState.Loading
-
+    //LOADING BUTTON
     private fun drawLoadingButton(canvas: Canvas) {
-
-
         //change button color
         paint.color = primaryColor
 
         //draw button
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
-
+    }
+    //ANIMATE_BUTTON_BACKGROUND
+    private fun drawAnimatedBackground(canvas: Canvas) {
+        //draw animated background for the Load Button
+        paint.color = darkPrimaryColor
+        canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
     }
 
-
+    //LOADING BUTTON BACKGROUND
     private fun animateLoadingButton() {
 
         paint.color = darkPrimaryColor
 
+        //set animation parameters
         valueAnimatorWidth.apply {
+
             interpolator = LinearInterpolator()
-            //animate button width from 0 to width size
+            //animate button width from 0 to the width size
             setFloatValues(0f, widthSize.toFloat())
-            duration = 3000
-
-
+            duration = 2500
         }
-        valueAnimatorWidth.addUpdateListener {
 
+        //listener
+        valueAnimatorWidth.addUpdateListener {
+            //update width
             animatedWidth = it.animatedValue as Float
-            //  canvas.drawRect(0f, 0f, animatedWidthValue, heightSize.toFloat(), paint)
+
+            //force draw()
             invalidate()
         }
 
@@ -115,44 +137,12 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     }
 
 
-    private fun drawText(text: String, canvas: Canvas) {
-
-        paint.color = Color.WHITE
-        canvas.drawText(text,
-                        (widthSize / 2).toFloat(),
-                        (heightSize / 2) + (heightSize / 10).toFloat(),
-                        paint)
-    }
-
-
-    //called every time your view needs to be drawn or redrawn
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        if (buttonState == ButtonState.Completed) {
-
-            drawDefaultButton(canvas)
-        }
-        else {
-
-            drawLoadingButton(canvas)
-            drawAnimatedBackground(canvas)
-            drawText(resources.getString(R.string.button_loading), canvas)
-            drawSmallCircle(canvas)
-        }
-
-
-    }
-
-    private fun drawAnimatedBackground(canvas: Canvas) {
-        //draw animated background for the Load Button
-        paint.color = darkPrimaryColor
-        canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
-    }
-
+    //SMALL CIRCLE
     private fun drawSmallCircle(canvas: Canvas) {
-        //draw Arc
+
         paint.color = accentColor
+
+        //draw Arc
         canvas.drawArc((widthSize * 0.66).toFloat(),
                        (heightSize * 0.2).toFloat(),
                        (widthSize * 0.74).toFloat(),
@@ -161,21 +151,16 @@ class LoadingButton @JvmOverloads constructor(context: Context,
                        animatedAngle,
                        true,
                        paint)
-
-
-        // canvas.drawa
-        //canvas.drawCircle(0f, 0f, ((heightSize/2).toFloat()), paint)
     }
 
-
+    //SMALL CIRCLE ANIMATION
     private fun animateArcAngle() {
         valueAnimatorAngle.apply {
 
-            duration = 3000
+            duration = 2500
             //set range of 0 to 360 degrees clockwise
             setFloatValues(0f, 360f)
             interpolator = LinearInterpolator()
-
 
         }
 
@@ -193,9 +178,19 @@ class LoadingButton @JvmOverloads constructor(context: Context,
             invalidate()
         }
 
-
         //start animation
         valueAnimatorAngle.start()
+    }
+
+
+    //DRAW_TEXT_ON_BUTTONS
+    private fun drawText(text: String, canvas: Canvas) {
+
+        paint.color = Color.WHITE
+        canvas.drawText(text,
+                        (widthSize / 2).toFloat(),
+                        (heightSize / 2) + (heightSize / 10).toFloat(),
+                        paint)
     }
 
 }
