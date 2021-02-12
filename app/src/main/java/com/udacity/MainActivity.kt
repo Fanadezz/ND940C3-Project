@@ -34,31 +34,30 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
+        //URLs
         private const val URL =
                 "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val URL1 = "https://github.com/bumptech/glide"
-        private const val URL2 =
-                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
+        private const val URL2 = "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
         private const val URL3 = "https://github.com/square/retrofit"
 
-
+        //CONSTANTS
         private const val CHANNEL_ID = "channelId"
         private const val NOTIFICATION_ID = 0
         const val FILE_NAME_KEY = "fileName"
         const val DOWNLOAD_STATUS_KEY = "downloadStatus"
 
-
     }
 
-    //ONCREATE
+    //ONCREATE()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-
         /*execute createNotification() as soon as app starts so as to create
          the notification channel that will enable Notification posting*/
+
         createNotificationChannel()
 
         //register Timber
@@ -74,8 +73,7 @@ class MainActivity : AppCompatActivity() {
             if (radioGroup.checkedRadioButtonId == -1) {
 
                 //Toast Message
-                Toast.makeText(this, resources.getString(R.string.radio_message_title), Toast.LENGTH_SHORT)
-                        .show()
+                Toast.makeText(this, resources.getString(R.string.radio_message_title), Toast.LENGTH_SHORT).show()
             }
             else {
 
@@ -87,15 +85,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     //BROADCAST RECEIVER
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             /*DownloadManager.enqueue(request) returns a unique long ID which acts as
             an identifier for the download.*/
-            val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
+            val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
             //DownloadManager.Query() is used to filter DownloadManager queries
             val query = DownloadManager.Query()
@@ -107,30 +104,26 @@ class MainActivity : AppCompatActivity() {
             if (cursor.moveToFirst()) {
 
                 when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+
                     //SUCCESS
                     DownloadManager.STATUS_SUCCESSFUL -> {
-
                         status = getString(R.string.success_status)
                         fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
-
-
                     }
 
                     //FAILURE
                     DownloadManager.STATUS_FAILED -> {
-
                         status = getString(R.string.failure_status)
                         fileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
-
                     }
 
                 }
             }
 
 
-            //call notify off NotificationManager passing in the id & notification
+            //call notify off NotificationManager to show/update notification
             notificationManager.apply {
-
+                //pass in the id & notification
                 notify(NOTIFICATION_ID, createNotification())
             }
 
@@ -150,19 +143,17 @@ class MainActivity : AppCompatActivity() {
         downloadID = downloadManager.enqueue(request) // enqueue puts the download request in the queue.
     }
 
-
+    //get url from the clicked Radio Button
     private fun getUrl(): String {
 
         return when (radioGroup.checkedRadioButtonId) {
-
             R.id.radioButton1 -> URL1
             R.id.radioButton2 -> URL2
-
             else              -> URL3
         }
-
-
     }
+
+
     //CREATE_CHANNEL
     private fun createNotificationChannel() {
 
@@ -205,7 +196,7 @@ class MainActivity : AppCompatActivity() {
             setContentTitle(resources.getString(R.string.notification_title))
             setSmallIcon(R.drawable.ic_assistant_black_24dp)
             setContentText(resources.getString(R.string.notification_description))
-            setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            setStyle(NotificationCompat.InboxStyle())
             setLargeIcon(eggImage)
 
             /* This is used by Android 7.1 and lower, Android 8.0 and higher,
@@ -223,12 +214,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         //PendingIntent
-        pendingIntent =
-                PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         action =
-                NotificationCompat.Action(
-                        R.drawable.download_status, getString(R.string.download_status), pendingIntent)
+                NotificationCompat.Action(R.drawable.download_status,
+                                          getString(R.string.download_status),
+                                          pendingIntent)
 
         //set pendingIntent
         builder.setContentIntent(pendingIntent)

@@ -8,18 +8,17 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
-import androidx.core.animation.addListener
 import androidx.core.content.res.ResourcesCompat
 import timber.log.Timber
 import kotlin.properties.Delegates
 
-class LoadingButton @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(
-        context, attrs, defStyleAttr) {
+class LoadingButton @JvmOverloads constructor(context: Context,
+                                              attrs: AttributeSet? = null,
+                                              defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
     private var widthSize = 0
     private var heightSize = 0
 
-    //variable for primary and primaryDark Color
+    //variables for primary and primaryDark Colors
     private val primaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
     private val darkPrimaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
     private val accentColor = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
@@ -31,10 +30,9 @@ class LoadingButton @JvmOverloads constructor(
     private var animatedWidth: Float = 0.0f
     private var animatedAngle: Float = 0.0f
 
-    //takes the initial button value and a callback that’s called after button state changes
+    //takes the initial button value and a callback that is called after button state changes
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(
-            ButtonState.Completed) { p, old, new ->
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { _, _, new ->
 
         if (new == ButtonState.Loading) {
             Timber.i("Animation Triggered")
@@ -42,37 +40,27 @@ class LoadingButton @JvmOverloads constructor(
             animateLoadingButton()
             animateArcAngle()
         }
-
-
     }
 
-
+    //PAINT OBJECT
     private val paint = Paint().apply {
-
 
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
         textSize = 45f
     }
 
-    init {
-
-    }
-
+    //ONCLICK
     override fun performClick(): Boolean {
         buttonState = ButtonState.Loading
-
         return super.performClick()
-
-
     }
 
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
         val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
-        val h: Int = resolveSizeAndState(
-                MeasureSpec.getSize(w), heightMeasureSpec, 0)
+        val h: Int = resolveSizeAndState(MeasureSpec.getSize(w), heightMeasureSpec, 0)
         widthSize = w
         heightSize = h
         setMeasuredDimension(w, h)
@@ -99,8 +87,6 @@ class LoadingButton @JvmOverloads constructor(
 
         //draw button
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
-
-
 
 
     }
@@ -132,8 +118,10 @@ class LoadingButton @JvmOverloads constructor(
     private fun drawText(text: String, canvas: Canvas) {
 
         paint.color = Color.WHITE
-        canvas.drawText(
-                text, (widthSize / 2).toFloat(), (heightSize / 2) + (heightSize / 10).toFloat(), paint)
+        canvas.drawText(text,
+                        (widthSize / 2).toFloat(),
+                        (heightSize / 2) + (heightSize / 10).toFloat(),
+                        paint)
     }
 
 
@@ -141,21 +129,17 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-       if (buttonState==ButtonState.Completed){
+        if (buttonState == ButtonState.Completed) {
 
-           drawDefaultButton(canvas)
-       }else{
+            drawDefaultButton(canvas)
+        }
+        else {
 
-           drawLoadingButton(canvas)
-           drawAnimatedBackground(canvas)
-           drawText(resources.getString(R.string.button_loading), canvas)
-           drawSmallCircle(canvas)
-       }
-
-
-
-
-
+            drawLoadingButton(canvas)
+            drawAnimatedBackground(canvas)
+            drawText(resources.getString(R.string.button_loading), canvas)
+            drawSmallCircle(canvas)
+        }
 
 
     }
@@ -169,12 +153,17 @@ class LoadingButton @JvmOverloads constructor(
     private fun drawSmallCircle(canvas: Canvas) {
         //draw Arc
         paint.color = accentColor
-        canvas.drawArc(
-                (widthSize * 0.66).toFloat(), (heightSize * 0.2).toFloat(), (widthSize * 0.74).toFloat(),
-                (heightSize * 0.8).toFloat(), 0f, animatedAngle, true, paint)
+        canvas.drawArc((widthSize * 0.66).toFloat(),
+                       (heightSize * 0.2).toFloat(),
+                       (widthSize * 0.74).toFloat(),
+                       (heightSize * 0.8).toFloat(),
+                       0f,
+                       animatedAngle,
+                       true,
+                       paint)
 
 
-       // canvas.drawa
+        // canvas.drawa
         //canvas.drawCircle(0f, 0f, ((heightSize/2).toFloat()), paint)
     }
 
@@ -197,13 +186,12 @@ class LoadingButton @JvmOverloads constructor(
             animatedAngle = it.animatedValue as Float
 
             //change button state when animation is over
-            if (animatedAngle==360f){
+            if (animatedAngle == 360f) {
 
                 buttonState = ButtonState.Completed
             }
             invalidate()
         }
-
 
 
         //start animation
