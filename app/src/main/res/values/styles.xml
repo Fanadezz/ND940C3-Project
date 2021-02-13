@@ -28,7 +28,8 @@
     <style name="CustomSub1" parent="TextAppearance.MaterialComponents.Subtitle1">
 
 <item name="android:textColor">@color/colorPrimary</item>
-
+<item name="android:textStyle">italic</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>

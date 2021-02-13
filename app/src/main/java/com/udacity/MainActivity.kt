@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
 
                 //pass the URL if a radio button is selected
                 download(getUrl())
+                //custom_button.isEnabled = false
             }
         }
 
