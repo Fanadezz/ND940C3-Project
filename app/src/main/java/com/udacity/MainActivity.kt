@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity() {
         private const val URL =
                 "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val URL1 = "https://github.com/bumptech/glide"
-        private const val URL2 = "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
+        private const val URL2 =
+                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
         private const val URL3 = "https://github.com/square/retrofit"
 
         //CONSTANTS
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //ONCREATE()
+    //ON_CREATE()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -73,7 +74,8 @@ class MainActivity : AppCompatActivity() {
             if (radioGroup.checkedRadioButtonId == -1) {
 
                 //Toast Message
-                Toast.makeText(this, resources.getString(R.string.radio_message_title), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, resources.getString(R.string.radio_message_title), Toast.LENGTH_SHORT)
+                        .show()
             }
             else {
 
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //BROADCAST RECEIVER
+    //BROADCAST_RECEIVER
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
@@ -130,6 +132,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //GET_URL
+    private fun getUrl(): String {
+        //get url from the clicked Radio Button
+        return when (radioGroup.checkedRadioButtonId) {
+            R.id.radioButton1 -> URL1
+            R.id.radioButton2 -> URL2
+            else              -> URL3
+        }
+    }
+
+    //DOWNLOAD
     private fun download(url: String) {
         val request =
                 DownloadManager.Request(Uri.parse(url))
@@ -141,16 +154,6 @@ class MainActivity : AppCompatActivity() {
 
         downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID = downloadManager.enqueue(request) // enqueue puts the download request in the queue.
-    }
-
-    //get url from the clicked Radio Button
-    private fun getUrl(): String {
-
-        return when (radioGroup.checkedRadioButtonId) {
-            R.id.radioButton1 -> URL1
-            R.id.radioButton2 -> URL2
-            else              -> URL3
-        }
     }
 
 
@@ -181,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //CREATE NOTIFICATION
+    //CREATE_NOTIFICATION
     private fun createNotification(): Notification {
 
         /*channel_ID required for compatibility with API 8, CHANNEL_ID
@@ -214,7 +217,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         //PendingIntent
-        pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        pendingIntent =
+                PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         action =
                 NotificationCompat.Action(R.drawable.download_status,
@@ -234,10 +238,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //kill the receiver
-
+    //ON_DESTROY
     override fun onDestroy() {
         super.onDestroy()
+
+        //kill the receiver
         unregisterReceiver(receiver)
     }
 

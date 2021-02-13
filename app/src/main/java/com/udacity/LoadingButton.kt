@@ -84,6 +84,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
         }
 
     }
+
     //DEFAULT_BUTTON
     private fun drawDefaultButton(canvas: Canvas) {
         paint.color = primaryColor
@@ -94,7 +95,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
         drawText(resources.getString(R.string.default_button_text), canvas)
     }
 
-    //LOADING BUTTON
+    //LOADING_BUTTON
     private fun drawLoadingButton(canvas: Canvas) {
         //change button color
         paint.color = primaryColor
@@ -103,14 +104,15 @@ class LoadingButton @JvmOverloads constructor(context: Context,
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
     }
-    //ANIMATE_BUTTON_BACKGROUND
+
+    //LOADING_BUTTON_BACKGROUND
     private fun drawAnimatedBackground(canvas: Canvas) {
         //draw animated background for the Load Button
         paint.color = darkPrimaryColor
         canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
     }
 
-    //LOADING BUTTON BACKGROUND
+    //ANIMATE_LOADING_BUTTON_BACKGROUND
     private fun animateLoadingButton() {
 
         paint.color = darkPrimaryColor
@@ -137,7 +139,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     }
 
 
-    //SMALL CIRCLE
+    //SMALL_CIRCLE
     private fun drawSmallCircle(canvas: Canvas) {
 
         paint.color = accentColor
@@ -153,7 +155,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
                        paint)
     }
 
-    //SMALL CIRCLE ANIMATION
+    //SMALL_CIRCLE_ANIMATION
     private fun animateArcAngle() {
         valueAnimatorAngle.apply {
 
