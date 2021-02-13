@@ -36,18 +36,22 @@
         android:id="@+id/fileNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="48dp"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/textView"
+        tools:text="My Appp Fiile" />
 
     <TextView
         android:id="@+id/statusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/fileNameTextView"
-        app:layout_constraintTop_toTopOf="@+id/textView2" />
+        app:layout_constraintTop_toTopOf="@+id/textView2"
+        tools:text="Success" />
 
     <Button
         android:id="@+id/ok_button"
