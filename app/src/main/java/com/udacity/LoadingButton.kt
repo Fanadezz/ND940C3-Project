@@ -203,7 +203,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     //DRAW_TEXT_ON_BUTTONS
     private fun drawText(text: String, canvas: Canvas) {
 
-        paint.color = Color.WHITE
+        paint.color = textColor
         canvas.drawText(text,
                         (widthSize / 2).toFloat(),
                         (heightSize / 2) + (heightSize / 10).toFloat(),
