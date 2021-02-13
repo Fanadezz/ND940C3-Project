@@ -9,14 +9,21 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.withStyledAttributes
 import timber.log.Timber
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(context: Context,
                                               attrs: AttributeSet? = null,
                                               defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
+
+    //width and height variables
     private var widthSize = 0
     private var heightSize = 0
+
+    //custom attributes
+    private var backGroundColor = 0
+    private var textColor = 0
 
     //variables for primary and primaryDark Colors
     private val primaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
@@ -29,6 +36,17 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     private val valueAnimatorAngle = ValueAnimator()
     private var animatedWidth: Float = 0.0f
     private var animatedAngle: Float = 0.0f
+
+
+    init {
+
+        context.withStyledAttributes(attrs, R.styleable.LoadingButton){
+
+            backGroundColor = getColor(R.styleable.LoadingButton_defaultBackGroundColor,0)
+            textColor = getColor(R.styleable.LoadingButton_defaultTextColor, 0)
+
+        }
+    }
 
     //takes the initial button value and a callback that is called after button state changes
 
