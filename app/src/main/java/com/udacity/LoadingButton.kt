@@ -38,7 +38,6 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     init {
 
         context.withStyledAttributes(attrs, R.styleable.LoadingButton){
-
             backGroundColor = getColor(R.styleable.LoadingButton_defaultBackGroundColor,0)
             textColor = getColor(R.styleable.LoadingButton_defaultTextColor, 0)
             accentColor = getColor(R.styleable.LoadingButton_accentButtonColor,0)
@@ -82,6 +81,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
         heightSize = h
         setMeasuredDimension(w, h)
     }
+
     //ON_DRAW
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -104,7 +104,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
 
     //DEFAULT_BUTTON
     private fun drawDefaultButton(canvas: Canvas) {
-        paint.color = primaryColor
+        paint.color = defaultButtonColor
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
 
         //write button text
@@ -115,7 +115,7 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     //LOADING_BUTTON
     private fun drawLoadingButton(canvas: Canvas) {
         //change button color
-        paint.color = primaryColor
+        paint.color = defaultButtonColor
 
         //draw button
         canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paint)
@@ -125,14 +125,12 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     //LOADING_BUTTON_BACKGROUND
     private fun drawAnimatedBackground(canvas: Canvas) {
         //draw animated background for the Load Button
-        paint.color = darkPrimaryColor
+        paint.color = backGroundColor
         canvas.drawRect(0f, 0f, animatedWidth, heightSize.toFloat(), paint)
     }
 
     //ANIMATE_LOADING_BUTTON_BACKGROUND
     private fun animateLoadingButton() {
-
-        paint.color = darkPrimaryColor
 
         //set animation parameters
         valueAnimatorWidth.apply {
