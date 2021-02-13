@@ -2,10 +2,8 @@
 <resources>
     <declare-styleable name="LoadingButton">
         <attr name="defaultBackGroundColor" format="color" />
-        <attr name="defaultTextColor" format="color" />
         <attr name="defaultButtonColor" format="color" />
         <attr name="accentButtonColor" format="color" />
-
-
+        <attr name="defaultTextColor" format="color" />
     </declare-styleable>
 </resources>

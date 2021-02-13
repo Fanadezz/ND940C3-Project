@@ -24,11 +24,8 @@ class LoadingButton @JvmOverloads constructor(context: Context,
     //custom attributes
     private var backGroundColor = 0
     private var textColor = 0
-
-    //variables for primary and primaryDark Colors
-    private val primaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
-    private val darkPrimaryColor = ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null)
-    private val accentColor = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
+    private var defaultButtonColor = 0
+    private var accentColor = 0
 
     /*provides a timing engine for running animations which calculate
     the animated values & set them on the target objects.*/
@@ -44,6 +41,8 @@ class LoadingButton @JvmOverloads constructor(context: Context,
 
             backGroundColor = getColor(R.styleable.LoadingButton_defaultBackGroundColor,0)
             textColor = getColor(R.styleable.LoadingButton_defaultTextColor, 0)
+            accentColor = getColor(R.styleable.LoadingButton_accentButtonColor,0)
+            defaultButtonColor = getColor(R.styleable.LoadingButton_defaultButtonColor,0)
 
         }
     }
